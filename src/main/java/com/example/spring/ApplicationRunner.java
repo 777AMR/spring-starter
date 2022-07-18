@@ -1,14 +1,16 @@
 package com.example.spring;
 
+import com.example.spring.config.ApplicationConfiguration;
 import com.example.spring.database.pool.ConnectionPool;
 import com.example.spring.database.repository.CompanyRepository;
 import com.example.spring.database.repository.CrudRepository;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class ApplicationRunner {
 
     public static void main(String[] args) {
-        try (var context = new ClassPathXmlApplicationContext("application.xml")) {
+        try (var context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class)) {
 //        clazz -> String -> Map<String, Object>
             var connectionPool = context.getBean("pool1", ConnectionPool.class);
             System.out.println(connectionPool);
