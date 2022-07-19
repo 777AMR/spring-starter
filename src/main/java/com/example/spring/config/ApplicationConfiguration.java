@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 //@ImportResource("classpath:application.xml")
 @Import(WebConfiguration.class)
-@Configuration
+@Configuration(proxyBeanMethods = true)
 @PropertySource("classpath:application.properties")
 @ComponentScan(value = "com.example.spring",
         useDefaultFilters = false,
@@ -27,9 +27,23 @@ public class ApplicationConfiguration {
     public ConnectionPool pool2(@Value("${db.username}") String username) {
         return new ConnectionPool(username, 20);
     }
+    @Bean
+    @Scope(BeanDefinition.SCOPE_SINGLETON)
+    public ConnectionPool pool3() {
+        return new ConnectionPool("test-pool", 25);
+    }
 
     @Bean
+    @Profile("prod|web")
+//    ! & |
     public UserRepository userRepository2(ConnectionPool pool2) {
         return new UserRepository(pool2);
+    }
+    @Bean
+    public UserRepository userRepository3() {
+        var connectionPool1 = pool3();
+        var connectionPool2 = pool3();
+        var connectionPool3 = pool3();
+        return new UserRepository(pool3());
     }
 }
